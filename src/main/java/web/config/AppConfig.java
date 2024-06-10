@@ -1,6 +1,5 @@
 package web.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -8,7 +7,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -20,7 +18,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 
-@PropertySource("classpath:dp.properties")
+@PropertySource("classpath:db.properties")
 
 @EnableJpaRepositories("web")
 
@@ -38,28 +36,20 @@ public class AppConfig {
 
     private Environment env;
 
-    @Autowired
-    public void setEnv(Environment env) {
+    public AppConfig(Environment env) {
         this.env = env;
     }
-
-
 
     @Bean(name = "entityManagerFactory")
     public LocalContainerEntityManagerFactoryBean getEntityManagerFactoryBean() {
         LocalContainerEntityManagerFactoryBean factoryBean =
                 new LocalContainerEntityManagerFactoryBean();
-        factoryBean.setJpaVendorAdapter(getJpaVendorAdapter());
         factoryBean.setDataSource(getDataSource());
         factoryBean.setPersistenceUnitName("myJpaPersistenceUnit");
         factoryBean.setPackagesToScan(env.getRequiredProperty(PROP_ENTITYMANAGER_PACKAGES_TO_SCAN));
         factoryBean.setJpaProperties(getHibernateProperties());
+        factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         return factoryBean;
-    }
-
-    @Bean
-    public JpaVendorAdapter getJpaVendorAdapter() {
-        return new HibernateJpaVendorAdapter();
     }
 
 

@@ -36,7 +36,7 @@ public class UserController {
     public String addUser(Model model) {
         User user = new User();
         model.addAttribute("user", user);
-        return "addUser";
+        return "add";
     }
 
     @PostMapping(value = "users/add")
@@ -49,7 +49,7 @@ public class UserController {
     public String editUser(ModelMap model, @RequestParam("id") Long id) {
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
-        return "editUser";
+        return "edit";
     }
 
     @PostMapping(value = "users/edit")
