@@ -3,7 +3,10 @@ package web.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import web.model.User;
 import web.service.UserService;
 
@@ -17,26 +20,26 @@ public class UserController {
     }
 
     @GetMapping(value = "/test")
-    public String test() {
+    public String showTestPage() {
         return "test";
     }
 
     @GetMapping(value = "/")
-    public String welcome() {
+    public String redirectToUsersPage() {
         return "redirect:/users";
     }
 
     @GetMapping(value = "users")
-    public String allUsers(ModelMap model) {
-        model.addAttribute("users", userService.getAllUser());
+    public String showAllUsers(ModelMap model) {
+        model.addAttribute("users", userService.getAllUsers());
         return "users";
     }
 
     @GetMapping(value = "users/add")
-    public String addUser(Model model) {
+    public String showAddUserForm(Model model) {
         User user = new User();
         model.addAttribute("user", user);
-        return "add";
+        return "addUser";
     }
 
     @PostMapping(value = "users/add")
@@ -46,14 +49,14 @@ public class UserController {
     }
 
     @GetMapping(value = "users/edit/{id}")
-    public String editUser(ModelMap model, @RequestParam("id") Long id) {
+    public String showEditUserForm(ModelMap model, @RequestParam("id") Long id) {
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
-        return "edit";
+        return "editUser";
     }
 
     @PostMapping(value = "users/edit")
-    public String edit(@ModelAttribute("user") User user) {
+    public String editUser(@ModelAttribute("user") User user) {
         userService.editUser(user);
         return "redirect:/";
     }
@@ -65,8 +68,8 @@ public class UserController {
     }
 
     @GetMapping("users/{id}")
-    public String show(@RequestParam("id") Long id, ModelMap modelMap) {
+    public String showUserDetails(@RequestParam("id") Long id, ModelMap modelMap) {
         modelMap.addAttribute("user", userService.getUserById(id));
-        return "show";
+        return "showUser";
     }
 }
